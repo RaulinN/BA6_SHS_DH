@@ -67,37 +67,45 @@ class QueryManager:
 
 
     def sendGetQuery(self, query: Query) -> JsonObject:
-        answer = JsonObject(self.session.get(url = query.url, params = query.params).json())
+        answer: JsonObject = JsonObject(self.session.get(url = query.url, params = query.params).json())
         self.handleQueryAnswer(answer)
         return answer
 
 
     def sendPostQuery(self, query: Query) -> JsonObject:
-        answer = JsonObject(self.session.post(url = query.url, data = query.params).json())
+        answer: JsonObject = JsonObject(self.session.post(url = query.url, data = query.params).json())
         self.handleQueryAnswer(answer)
         return answer
 
 
-    def testSendAppendMessage(self):
-        # See the result here:
-        # http://wikipast.epfl.ch/wiki/EliteBot:_test
-
+    def __editPage(self, queryGenerationFunction, pageTitle: str, payload: str, createOnly: bool):
         # POST request to edit a page
-        query = Queries.postAppendPageQuery(
+        query: Query = queryGenerationFunction(
             self.csrfToken,
-            "EliteBot: test",
-            "Hello world!",
-            createOnly = False
+            pageTitle,
+            payload,
+            createOnly = createOnly
         )
         self.sendPostQuery(query)
+
+    def prependContentPage(self, pageTitle: str, payload: str, createOnly: bool = True):
+        return self.__editPage(Queries.postPrependPageQuery, pageTitle, payload, createOnly)
+
+    def setContentPage(self, pageTitle: str, payload: str, createOnly: bool = True):
+        return self.__editPage(Queries.postSetPageQuery, pageTitle, payload, createOnly)
+
+    def appendContentPage(self, pageTitle: str, payload: str, createOnly: bool = True):
+        return self.__editPage(Queries.postAppendPageQuery, pageTitle, payload, createOnly)
+
 
 
 
 def main():
     uploadManager = QueryManager()
-    uploadManager.testSendAppendMessage()
+    # See the result here:
+    # http://wikipast.epfl.ch/wiki/EliteBot:_test
+    uploadManager.appendContentPage("EliteBot: test", "Hello world!", createOnly = False)
 
 
 if __name__ == '__main__':
     main()
-
