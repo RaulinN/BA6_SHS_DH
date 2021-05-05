@@ -3,7 +3,7 @@ from enum import Enum
 from model.network.Query import Query
 
 
-ANSWER_FORMAT = 'json'  # (query and) answer format
+ANSWER_FORMAT: str = 'json'  # (query and) answer format
 
 
 def fetchLoginTokenQuery() -> Query:

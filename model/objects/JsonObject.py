@@ -12,10 +12,10 @@ class JsonObject:
     def __init__(self, params: dict):
         self.json = params
 
-    def prettySyntax(self):
+    def prettyFormat(self):
         """Generates a pretty printable string representation of the JSON object"""
         return json.dumps(self.json, indent = 4, sort_keys = True)
 
     def prettyPrint(self):
         """Pretty prints the JSON object"""
-        print(self.prettySyntax())
+        print(self.prettyFormat())

@@ -44,16 +44,16 @@ class QueryManager:
         """Returns EliteBot's credentials: loginToken & csrfToken"""
 
         # GET request to fetch login token
-        query = Queries.fetchLoginTokenQuery()
+        query: Query = Queries.fetchLoginTokenQuery()
         queryAnswer = self.sendGetQuery(query)
         loginToken = queryAnswer.json['query']['tokens']['logintoken']
 
         # POST request to log in
-        query = Queries.postLoginQueryQuery(BotIdentification.ID_USERNAME, BotIdentification.ID_PASSWORD, loginToken)
+        query: Query = Queries.postLoginQueryQuery(BotIdentification.ID_USERNAME, BotIdentification.ID_PASSWORD, loginToken)
         self.sendPostQuery(query)
 
         # GET request to fetch CSRF token
-        query = Queries.fetchCsrfTokenQuery()
+        query: Query = Queries.fetchCsrfTokenQuery()
         queryAnswer = self.sendGetQuery(query)
         csrfToken = queryAnswer.json['query']['tokens']['csrftoken']
 
@@ -101,7 +101,7 @@ class QueryManager:
 
 
 def main():
-    uploadManager = QueryManager()
+    uploadManager: QueryManager = QueryManager()
     # See the result here:
     # http://wikipast.epfl.ch/wiki/EliteBot:_test
     uploadManager.appendContentPage("EliteBot: test", "Hello world!", createOnly = False)
