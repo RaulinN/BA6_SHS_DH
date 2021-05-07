@@ -62,7 +62,7 @@ class QueryManager:
 
     @staticmethod
     def handleQueryAnswer(jsonAnswer: JsonObject) -> None:
-        if 'error' in jsonAnswer.json.keys():
+        if 'error' in jsonAnswer.json.keys() or 'warning' in jsonAnswer.json.keys():
             jsonAnswer.prettyPrint()
 
 
