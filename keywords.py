@@ -1,6 +1,4 @@
 
-
-
 # CATEGORIES
 biography = "Données biographiques"
 formation = "Formation"
@@ -26,4 +24,4 @@ country = "pays"
 duration = "durée"
 company = "entreprise/association éco"
 function = "fonction"
-company_body = "organe" 
+company_body = "organe"
