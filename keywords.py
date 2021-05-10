@@ -27,3 +27,7 @@ duration = "durée"
 company = "entreprise/association éco"
 function = "fonction"
 company_body = "organe" 
+
+test = {biography:{name:'Abate', first_name:'Fabio', sex:'H', birth:'04.01.1966', birth_place:'Locarno(TI)'},
+        formation:[{year:'', title:'Licence', category:'droit', place:'UniBe', country:'Suisse'}]}
+test

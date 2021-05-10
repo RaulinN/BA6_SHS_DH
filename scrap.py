@@ -5,6 +5,36 @@ import time
 import sys
 import pandas as pd
 import os
+from PastaMaker import *
+
+# CATEGORIES
+biography = "Données biographiques"
+formation = "Formation"
+functions = "Fonctions et mandats"
+
+# BIOGRAPHY
+name = "Nom :"
+first_name = "Prénom :"
+sex = "Sexe :"
+dates = "Dates :"
+birth = "Naissance:"
+death = "Décès:"
+birth_place = "Lieu naissance :"
+
+# FORMATION
+year = "année"
+title = "titre"
+category = "catégorie"
+place = "lieu"
+country = "pays"
+
+# FUNCTIONS
+duration = "durée"
+company = "entreprise/association éco"
+function = "fonction"
+company_body = "organe" 
+
+bio_tab = [name, first_name, sex, dates, birth, death, birth_place]
 
 def get_id(letter, existing_elites=[], limit = 100000):
     """
@@ -176,12 +206,12 @@ def get_infos(id_elite, soup):
             infos['Fonctions et mandats'] = {**infos['Fonctions et mandats'], **tab_to_df_dic(tag, [])}
             
     # Militaire
-    
+    """
     soup_mili = soup.find('table', attrs = {'class' : 'emg'})
     
     if(soup_mili is not None):
         infos['Militaire'] = tab_to_df_dic(soup_mili, ['field','value'])['Default']
-        
+    """    
     # Ajout de l'ID
     
     infos['ID'] = id_elite
@@ -192,7 +222,7 @@ def get_infos(id_elite, soup):
 
 # Importation/Scrap des ID 
 #save_var(get_id('O', limit = 100), 'scrap', 'ID_O_100')
-ID_O_100 = open_var('scrap', 'ID_O_100')
+#ID_O_100 = open_var('scrap', 'ID_O_100')
 
 # Importation/Scrap des soups
 """
@@ -222,4 +252,75 @@ for ID,soup in soups_ID_O_100.items():
     i += 1
 save_var(infos_ID_O_100, 'scrap', 'infos_ID_O_100')
 """
-infos_ID_O_100 = open_var('scrap', 'infos_ID_O_100')
+#infos_ID_O_100 = open_var('scrap', 'infos_ID_O_100')
+"""
+{'BIOGRAPHY':
+     {'BIRTH_DATE':'...'}
+ 'FORMATION':
+     [{'année' : ..., }, ...],
+ 'FONCTIONS': 
+     [{'année' : ..., }, ...]
+}
+"""
+
+
+def get_infos(id_elite, soup):
+    
+    # Résultat 
+    
+    infos = {}
+
+    # Données biographiques
+    
+    soup_bio = soup.find('table', attrs = {'class' : 'bio'})
+    
+    if(soup_bio is not None):
+        infos[biography] = bio_tab_reader(soup_bio)[0]
+    
+    # Ajout de l'ID
+    
+    infos['ID'] = id_elite
+        
+    return infos
+
+def bio_tab_reader(soup):
+            
+    key = ''
+    key_state = False
+    res = {}
+    new_keys = []
+    
+    for tag in soup.find_all({'td'}, attrs = {'class' : ''}):
+        
+        text = tag.text
+        
+        if(key_state):
+            key_state = False
+            if(key == bio_tab[3]):
+                dates = text.split()
+                key2 = ''
+                key2_state = False
+                for it in dates:
+                    if(key2_state):
+                        if(key2 in bio_tab):
+                            res[key2] = it
+                        else:
+                            key_state.append(key2)
+                        key2_state = False
+                    else:
+                        key2_state = True
+                        key2 = it
+                        
+            elif(key in bio_tab):
+                res[key] = text
+            else:
+                new_keys.append(key)
+            key_state = False
+        else:
+            key = text
+            key_state = True
+            
+    return [res, new_keys]
+
+def tab_reader(soup):
+    
