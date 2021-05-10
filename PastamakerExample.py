@@ -1,12 +1,13 @@
 import PastaMaker as p
-import scrap
+from scrap import *
 import pickle
 
 if __name__ == '__main__':
     pasta = p.PastaMaker("Test.url")
+    """
     p_str = {'Données biographiques': {'Nom :': 'Abate',
                                        'Prénom :': 'Fabio',
-                                       'Sexe :': 'H',
+                                       'Sexe :': 'F',
                                        'Naissance: ': '04.01.1966',
                                        'Lieu naissance :': 'Locarno(TI)'},
              'Formation': [{'année': '(1975)',
@@ -18,6 +19,6 @@ if __name__ == '__main__':
                                        'entreprise/association éco': 'Unil',
                                        'fonction': 'Président'}]
              }
-
-    pasta.add_ingredient(p_str)
+    """
+    pasta.add_ingredient(get_infos(55409, get_soup(55409)))
     pasta.cook()

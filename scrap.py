@@ -6,6 +6,7 @@ import sys
 import pandas as pd
 import os
 from PastaMaker import *
+import keywords
 
 # CATEGORIES
 biography = "Données biographiques"
@@ -96,62 +97,30 @@ def open_var(directory, name):
         print("Ouverture réussie")
         return pickle.load(f)
 
-def tab_to_df_dic(soup, given_header = []):
-    """
-    Prends une soupe tableau qui ne comporte qu'un header, plusieurs sous tableaux <th> possibles
-    Ressort un dictionnaire avec en clé le nom du sous tableau (<th>) et un dataframe correspondant au sous-tableau en valeur
+def tab_to_dic(soup):
     
-    Il est possible de notifier les headers lorsqu'ils n'existent pas : si aucun header n'est reconnu, renvoie {'Error':'Error'}
+    # On recherche d'abord les headers
     
-    Problème constaté avec les headers, dans le doute je mets toujours []
-    """
-    storage = {}
-    
-    header = given_header
-    
-    if(header == []):
-        # On recherche d'abord le header
-        for tag in soup.find_all('td', attrs = {'class' : 'b'}):
-            header.append(tag.text)
-            
-    header_len = len(header)
-        
-    # Si jamais les en-têtes ne sont pas trouvées ou informées, on ne sait pas combien il y a de colonnes
-    # On stop le scrap pour la formation
-        
-    if(header_len != 0):
-        # Pour chacun des sous-tableaux, on crée un df que l'on viens remplir
-            
-        current_tab_name = ''
-        current_row = {}
-        i = 0
-        
-        for tag in soup.find_all({'td', 'th'}, attrs = {'class' : ''}):
-            if(tag.name == 'th'):
-                current_tab_name = tag.text
-                storage[current_tab_name] = pd.DataFrame(columns = header)
-                continue
-            if(current_tab_name == ''):
-                current_tab_name = 'Default'
-                storage[current_tab_name] = pd.DataFrame(columns = header)
-            if(i < header_len - 1):
-                current_row[header[i]] = tag.text
-                i += 1
-            elif(i == header_len - 1):
-                current_row[header[i]] = tag.text
-                
-                # On vérifie si c'est une ligne vide
-                for values in current_row.values():
-                    if values != '':
-                        storage[current_tab_name] = storage[current_tab_name].append(current_row, ignore_index = True)
-                        break
-                i = 0
-    else:
-        storage = {'Error':'Error'}
-        
     header = []
+    
+    for it in soup.find_all('td', attrs = {'class':'b'}):
+        header.append(it.text)
         
-    return storage
+    if(header != []):
+        header_len = len(header)
+        i = header_len
+        res = []
+        temp_dic = {}
+        for it in soup.find_all('td', attrs = {'class':''}):
+            if(it.text != ''):
+                temp_dic[header[i%header_len]]= it.text
+            if(i%header_len == header_len - 1):
+                if(temp_dic != {}):
+                    res.append(temp_dic)
+                temp_dic = {}
+            i += 1            
+                
+    return res
 
 def get_infos(id_elite, soup):
     
@@ -183,7 +152,27 @@ def get_infos(id_elite, soup):
     soup_bio = soup.find('table', attrs = {'class' : 'bio'})
     
     if(soup_bio is not None):
-        infos['Données Biographie'] = tab_to_df_dic(soup_bio, ['field','value'])[soup_bio.find('th').text]
+        key_catch = ''
+        infos[biography] = {}
+        
+        for it in soup_bio.find_all('td'):
+            if(key_catch != ''):
+                infos[biography][key_catch] = it.text
+                key_catch = ''
+            elif(it.text != ''):
+                key_catch = it.text
+        
+        if dates in infos[biography].keys():
+            data = infos[biography][dates].split()
+            key_catch = ''
+            for i in range(len(data)):
+                if(i%2):
+                    infos[biography][key_catch] = data[i]
+                    key_catch = ''
+                else:
+                    key_catch = data[i]
+                i += 1
+            del infos[biography][dates]
     
     # Formation, tableau
     
@@ -191,8 +180,9 @@ def get_infos(id_elite, soup):
     
     if(soup_forma is not None):
         
-        infos['Formation'] = tab_to_df_dic(soup_forma)
-
+        infos[formation] = tab_to_dic(soup_forma)
+        
+    
     # Fonctions et mandats
     
     soup_fonc = soup.find_all('table', attrs = {'class' : 'fem'})
@@ -200,22 +190,15 @@ def get_infos(id_elite, soup):
     
     if(len(list(soup_fonc)) > 0):
         
-        infos['Fonctions et mandats'] = {}
+        infos[functions] = []
         
         for tag in soup_fonc:
-            infos['Fonctions et mandats'] = {**infos['Fonctions et mandats'], **tab_to_df_dic(tag, [])}
-            
-    # Militaire
-    """
-    soup_mili = soup.find('table', attrs = {'class' : 'emg'})
-    
-    if(soup_mili is not None):
-        infos['Militaire'] = tab_to_df_dic(soup_mili, ['field','value'])['Default']
-    """    
+            infos[functions] += tab_to_dic(tag)
+   
     # Ajout de l'ID
     
-    infos['ID'] = id_elite
-        
+    infos[identificator] = id_elite
+    
     return infos
 
 # Executions
@@ -253,74 +236,5 @@ for ID,soup in soups_ID_O_100.items():
 save_var(infos_ID_O_100, 'scrap', 'infos_ID_O_100')
 """
 #infos_ID_O_100 = open_var('scrap', 'infos_ID_O_100')
-"""
-{'BIOGRAPHY':
-     {'BIRTH_DATE':'...'}
- 'FORMATION':
-     [{'année' : ..., }, ...],
- 'FONCTIONS': 
-     [{'année' : ..., }, ...]
-}
-"""
 
-
-def get_infos(id_elite, soup):
-    
-    # Résultat 
-    
-    infos = {}
-
-    # Données biographiques
-    
-    soup_bio = soup.find('table', attrs = {'class' : 'bio'})
-    
-    if(soup_bio is not None):
-        infos[biography] = bio_tab_reader(soup_bio)[0]
-    
-    # Ajout de l'ID
-    
-    infos['ID'] = id_elite
-        
-    return infos
-
-def bio_tab_reader(soup):
-            
-    key = ''
-    key_state = False
-    res = {}
-    new_keys = []
-    
-    for tag in soup.find_all({'td'}, attrs = {'class' : ''}):
-        
-        text = tag.text
-        
-        if(key_state):
-            key_state = False
-            if(key == bio_tab[3]):
-                dates = text.split()
-                key2 = ''
-                key2_state = False
-                for it in dates:
-                    if(key2_state):
-                        if(key2 in bio_tab):
-                            res[key2] = it
-                        else:
-                            key_state.append(key2)
-                        key2_state = False
-                    else:
-                        key2_state = True
-                        key2 = it
-                        
-            elif(key in bio_tab):
-                res[key] = text
-            else:
-                new_keys.append(key)
-            key_state = False
-        else:
-            key = text
-            key_state = True
-            
-    return [res, new_keys]
-
-def tab_reader(soup):
-    
+print(get_infos(55409, soups_ID_O_100[55409]))

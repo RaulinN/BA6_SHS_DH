@@ -3,14 +3,15 @@
 biography = "Données biographiques"
 formation = "Formation"
 functions = "Fonctions et mandats"
+identificator = "ID"
 
 # BIOGRAPHY
 name = "Nom :"
 first_name = "Prénom :"
 sex = "Sexe :"
 dates = "Dates :"
-birth = "Naissance: "
-death = "Décès :"
+birth = "Naissance:"
+death = "Décès:"
 birth_place = "Lieu naissance :"
 
 # FORMATION
@@ -25,3 +26,4 @@ duration = "durée"
 company = "entreprise/association éco"
 function = "fonction"
 company_body = "organe" 
+
