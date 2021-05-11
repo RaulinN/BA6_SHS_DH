@@ -61,10 +61,11 @@ class PastaMaker:
             text1 = "" if self.name is None else self.name
             space = " " if self.lastName is not None and self.name is not None else ""
             text2 = "" if self.lastName is None else self.lastName
+            #print(self.name, self.lastName)
             return text1 + space + text2
 
     def __todate(self, date_str):
-        print("Will date format " + date_str)
+        #print("Will date format " + date_str)
         if bool(re.match(r"\d\d.\d\d.\d{4}", date_str)):
             return datetime.strptime(date_str, "%d.%m.%Y").date()
         elif bool(re.match(r"\d{4}", date_str)):
@@ -91,10 +92,10 @@ class PastaMaker:
             self.sex = False if biography[sex].upper() == 'H' else True
 
         if name in biography:
-            self.name = biography[name]
+            self.name = biography[first_name]
 
         if first_name in biography:
-            self.first_name = biography[first_name]
+            self.lastName = biography[name]
 
         if birth in biography and biography[birth]:
             self.__startLine()
@@ -154,4 +155,5 @@ class PastaMaker:
         """ Make the past -- I mean returns the page created as a long string"""
         # TODO call the wikipast magic class
         self.pages.sort(key=lambda x: x[0])
-        print("".join([x[1] for x in self.pages]))
+        payload = "".join([x[1] for x in self.pages])
+        print(payload)
