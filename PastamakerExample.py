@@ -20,5 +20,5 @@ if __name__ == '__main__':
                                        'fonction': 'Président'}]
              }
     """
-    pasta.add_ingredient(get_infos(55409, get_soup(55409)))
+    pasta.add_ingredient(get_infos(get_soup(55435)))
     pasta.cook()

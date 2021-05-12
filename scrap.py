@@ -8,35 +8,6 @@ import os
 from PastaMaker import *
 import keywords
 
-# CATEGORIES
-biography = "Données biographiques"
-formation = "Formation"
-functions = "Fonctions et mandats"
-
-# BIOGRAPHY
-name = "Nom :"
-first_name = "Prénom :"
-sex = "Sexe :"
-dates = "Dates :"
-birth = "Naissance:"
-death = "Décès:"
-birth_place = "Lieu naissance :"
-
-# FORMATION
-year = "année"
-title = "titre"
-category = "catégorie"
-place = "lieu"
-country = "pays"
-
-# FUNCTIONS
-duration = "durée"
-company = "entreprise/association éco"
-function = "fonction"
-company_body = "organe" 
-
-bio_tab = [name, first_name, sex, dates, birth, death, birth_place]
-
 def get_id(letter, existing_elites=[], limit = 100000):
     """
     Prends en entrée la lettre du début du nom des élites que l'on souhaite extraire 
@@ -66,7 +37,7 @@ def get_id(letter, existing_elites=[], limit = 100000):
 
 def get_soup(id_elite):
     """
-    Renvoie une soupe à partir d'un id'
+    Renvoie une soupe à partir d'un id
     """
 
     url = 'https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite='+str(id_elite)
@@ -102,14 +73,14 @@ def tab_to_dic(soup):
     # On recherche d'abord les headers
     
     header = []
+    res = []
     
     for it in soup.find_all('td', attrs = {'class':'b'}):
         header.append(it.text)
-        
+    
     if(header != []):
         header_len = len(header)
         i = header_len
-        res = []
         temp_dic = {}
         for it in soup.find_all('td', attrs = {'class':''}):
             if(it.text != ''):
@@ -118,31 +89,11 @@ def tab_to_dic(soup):
                 if(temp_dic != {}):
                     res.append(temp_dic)
                 temp_dic = {}
-            i += 1            
-                
+            i += 1      
+            
     return res
 
-def get_infos(id_elite, soup):
-    
-    """
-    Renvoie les informations sous la forme d'un dictionnaire d'une élite donnée (on donne un ID et la soupe correspondante)
-    
-    Le dictionnaire se présente sous la forme (lorsque les catégories existent): 
-    {'ID' : l'ID renseigné en argument
-     'Données Biographie' : Dataframe des données biographiques,
-     'Militaire' : Dataframe des données biographiques,
-     'Fonctions et mandats' : {
-         {Catégorie 1} : Dataframe de la catégorie
-         {Catégorie 2} : Dataframe de la catégorie 
-         ...
-         },
-     'Formation' : {
-         {Catégorie 1} : Dataframe de la catégorie
-         {Catégorie 2} : Dataframe de la catégorie 
-         ...
-         },
-     }
-    """
+def get_infos(soup):
     # Résultat 
     
     infos = {}
@@ -182,7 +133,6 @@ def get_infos(id_elite, soup):
         
         infos[formation] = tab_to_dic(soup_forma)
         
-    
     # Fonctions et mandats
     
     soup_fonc = soup.find_all('table', attrs = {'class' : 'fem'})
@@ -194,47 +144,47 @@ def get_infos(id_elite, soup):
         
         for tag in soup_fonc:
             infos[functions] += tab_to_dic(tag)
-   
-    # Ajout de l'ID
-    
-    infos[identificator] = id_elite
     
     return infos
 
-# Executions
+def unused_keywords(soups):
+    res = {}
+    res[biography] = []
+    res[functions] = []
+    res[formation] = []
+    ()
+    for ID, soup in soups.items():
+        infos = get_infos(soup)
+        
+        if(biography in list(infos.keys())):
+            #print("----- BIOGRAPHY -----")
+            bio_keywords = list(infos[biography].keys())
+            for it in bio_keywords:
+                if it not in res[biography] and it not in all_biography_keywords:
+                    print(str(ID)+it)
+                    res[biography].append(it)
+                    
+        if(functions in list(infos.keys())):
+            #print("----- FUNCTIONS -----")
+            for dic in infos[functions]:
+                 keys = list(dic.keys())
+                 for it in keys:
+                     if it not in res[functions] and it not in all_functions_keywords:
+                         res[functions].append(it)
+                         print(str(ID)+it)
+                         
+        if(formation in list(infos.keys())):
+            #print("----- FUNCTIONS -----")
+            for dic in infos[formation]:
+                 keys = list(dic.keys())
+                 for it in keys:
+                     if it not in res[formation] and it not in all_formation_keywords:
+                         res[formation].append(it)
+                         print(str(ID)+it)
+                    
+    print(res)
 
-# Importation/Scrap des ID 
-#save_var(get_id('O', limit = 100), 'scrap', 'ID_O_100')
-#ID_O_100 = open_var('scrap', 'ID_O_100')
-
-# Importation/Scrap des soups
-"""
-soups_ID_O_100 = {}
-i = 1
-l = str(len(ID_O_100.keys()))
-for ID in ID_O_100.keys():
-    start = time.time()
-    soups_ID_O_100[ID] = get_soup(ID)
-    print(str(i)+"/"+l+' Temps : '+str(time.time() - start))
-    i += 1
-    time.sleep(1)
-    
-save_var(soups_ID_O_100, 'scrap', 'soups_ID_O_100')
-"""
-soups_ID_O_100 = open_var('scrap', 'soups_ID_O_100')
-
-# Détermination des infos => dico
-"""
-infos_ID_O_100 = {}
-i = 1
-l = str(len(ID_O_100.keys()))
-for ID,soup in soups_ID_O_100.items():
-    start = time.time()
-    infos_ID_O_100[ID] = get_infos(ID, soup)
-    print(str(i)+"/"+l+' Temps : '+str(time.time() - start))
-    i += 1
-save_var(infos_ID_O_100, 'scrap', 'infos_ID_O_100')
-"""
-#infos_ID_O_100 = open_var('scrap', 'infos_ID_O_100')
-
-print(get_infos(55409, soups_ID_O_100[55409]))
+soups = open_var('scrap', 'soups_ID_O_100')
+#print(get_infos(soups[87322]))
+unused_keywords(soups)
+print(soups.keys())
