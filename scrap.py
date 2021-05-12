@@ -33,6 +33,7 @@ def get_id(letter, existing_elites=[], limit = 100000):
             id_dict[elite_id] = identity
         print(str(i)+"/"+tot)
         i += 1
+        time.sleep(1)
     return id_dict
 
 def get_soup(id_elite):
@@ -183,8 +184,7 @@ def unused_keywords(soups):
                          print(str(ID)+it)
                     
     print(res)
-
-soups = open_var('scrap', 'soups_ID_O_100')
-#print(get_infos(soups[87322]))
+"""
+soups = open_var('scrap', 'soups_ID_A')
 unused_keywords(soups)
-print(soups.keys())
+"""

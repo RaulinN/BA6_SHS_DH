@@ -23,7 +23,7 @@ place = "lieu"
 country = "pays"
 all_formation_keywords = [year, title, category, place, country]
 
-# FUNCTIONS
+# FUNCTIONS | Un ID entre paranthèse fait référence à une élite avec cette catégorie 
 # Entreprises et associations économiques (54885)
 duration = "durée"
 company = "entreprise/association éco"
@@ -40,6 +40,9 @@ affiliation = "affiliation département"
 # Académique (80060)
 university = "université"
 discipline = "discipline"
+
+# Lieu de sociabilité - associations (63195)
+association = "association"
 
 all_functions_keywords = [duration, company, function, company_body]
 

@@ -3,22 +3,10 @@ from scrap import *
 import pickle
 
 if __name__ == '__main__':
-    pasta = p.PastaMaker("Test.url")
-    """
-    p_str = {'Données biographiques': {'Nom :': 'Abate',
-                                       'Prénom :': 'Fabio',
-                                       'Sexe :': 'F',
-                                       'Naissance: ': '04.01.1966',
-                                       'Lieu naissance :': 'Locarno(TI)'},
-             'Formation': [{'année': '(1975)',
-                            'titre': 'Licence',
-                            'catégorie': 'droit',
-                            'lieu': 'UniBe',
-                            'pays': 'Suisse'}],
-             "Fonctions et mandats": [{'durée': '1499-2000',
-                                       'entreprise/association éco': 'Unil',
-                                       'fonction': 'Président'}]
-             }
-    """
-    pasta.add_ingredient(get_infos(get_soup(55435)))
-    pasta.cook()
+    soups = open_var('scrap', 'soups_ID_A')   
+    for ID in soups.keys():
+        pasta = p.PastaMaker(str(ID)) # Je n'ai mis ici que l'ID pour la visiblité 
+        infos = get_infos(soups[ID])
+        print("------------------------"+str(ID)+"------------------------")
+        pasta.add_ingredient(infos)
+        pasta.cook()
