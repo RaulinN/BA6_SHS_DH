@@ -69,7 +69,7 @@ def open_var(directory, name):
         print("Ouverture réussie")
         return pickle.load(f)
 
-def tab_to_dic(soup):
+def tab_to_dic(soup, category = ''):
     
     # On recherche d'abord les headers
     
@@ -77,7 +77,17 @@ def tab_to_dic(soup):
     res = []
     
     for it in soup.find_all('td', attrs = {'class':'b'}):
-        header.append(it.text)
+        if(category != '' and it.text == body):
+            if(category == company_association):
+                header.append(company_body)
+            elif(category == politics):
+                header.append(political_body)
+            elif(category == sociability):
+                header.append(sociability_body)
+            else:
+                header.append(it.text)
+        else:
+            header.append(it.text)
     
     if(header != []):
         header_len = len(header)
@@ -144,7 +154,7 @@ def get_infos(soup):
         infos[functions] = []
         
         for tag in soup_fonc:
-            infos[functions] += tab_to_dic(tag)
+            infos[functions] += tab_to_dic(tag, tag.find('th').text)
     
     return infos
 
@@ -184,7 +194,3 @@ def unused_keywords(soups):
                          print(str(ID)+it)
                     
     print(res)
-"""
-soups = open_var('scrap', 'soups_ID_A')
-unused_keywords(soups)
-"""

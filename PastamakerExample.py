@@ -8,5 +8,6 @@ if __name__ == '__main__':
         pasta = p.PastaMaker(str(ID)) # Je n'ai mis ici que l'ID pour la visiblité 
         infos = get_infos(soups[ID])
         print("------------------------"+str(ID)+"------------------------")
+        print(infos)
         pasta.add_ingredient(infos)
         pasta.cook()
