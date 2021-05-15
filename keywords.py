@@ -33,7 +33,7 @@ company_association = 'Entreprises et associations économiques'
 duration = "durée"
 company = "entreprise/association éco"
 function = "fonction"
-company_body = "organe d'entreprise" 
+company_body = "organe d'entreprise"  # no use to us
 
 # Politique (54885)
 politics = "Politique"
