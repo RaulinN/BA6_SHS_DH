@@ -104,10 +104,10 @@ def tab_to_dic(soup, category = ''):
             
     return res
 
-def get_infos(soup):
+def get_infos(soup, ID):
     # Résultat 
     
-    infos = {}
+    infos = {'ID':ID}
 
     # Données biographiques
     
