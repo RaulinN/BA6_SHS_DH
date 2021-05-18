@@ -7,9 +7,10 @@ import re
 class PastaMaker:
     annoying_chars = ' ≤>≥?-'
 
-    def __init__(self, url):
+    def __init__(self, id: int):
         """Create a page"""
-        self.url = url
+        self.id = str(id)
+        self.url = 'https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite=' + str(id)
         # Tuples with a date first and then
         self.pages = []
         self.page = []
@@ -70,14 +71,14 @@ class PastaMaker:
             text1 = "" if self.name is None else self.name
             space = " " if self.lastName is not None and self.name is not None else ""
             text2 = "" if self.lastName is None else self.lastName
-            return text1 + space + text2
+            return text1 + space + text2 +  ' (' + self.id + ')'
 
     def __parethisisOff(self, words):
         return re.match(r"([^\(]+)(\(.+\))?", words).groups()
 
     def __todate(self, date_str):
         date_str = date_str.lstrip(self.annoying_chars)
-        # print("Will date format " + date_str)
+        #print("Will date format " + date_str)
         if bool(re.match(r"\d\d?\.00\.\d{4}", date_str)):
             return date(1, 1, 1)
         elif bool(re.match(r"00\.\d\d?\.\d{4}", date_str)):
@@ -211,5 +212,5 @@ class PastaMaker:
         """ Make the past -- I mean returns the page created as a long string"""
         # TODO call the wikipast magic class
         self.pages.sort(key=lambda x: x[0])
-        payload = "".join([x[1] for x in self.pages])
+        payload = "".join([x[1] for x in self.pages if x[0] != date(1, 1, 1)])
         print(payload)
