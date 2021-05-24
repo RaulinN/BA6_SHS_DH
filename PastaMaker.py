@@ -214,3 +214,4 @@ class PastaMaker:
         self.pages.sort(key=lambda x: x[0])
         payload = "".join([x[1] for x in self.pages if x[0] != date(1, 1, 1)])
         print(payload)
+        return payload
