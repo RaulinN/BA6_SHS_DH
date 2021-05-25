@@ -39,9 +39,9 @@ class PastaMaker:
 
     def __toWikidate(self, date_str: str):
         date_str = date_str.lstrip(self.annoying_chars)
-        if bool(re.match(r"\d\d?\.00\.\d{4}", date_str)):
+        if bool(re.match(r"\d\d?\.00?\.\d{4}", date_str)):
             return date(1, 1, 1)
-        elif bool(re.match(r"00\.\d\d?\.\d{4}", date_str)):
+        elif bool(re.match(r"00?\.\d\d?\.\d{4}", date_str)):
             return date(1, 1, 1)
         elif bool(re.match(r"\d\d?\.\d\d?\.\d{4}", date_str)):
             d = datetime.strptime(date_str, "%d.%m.%Y").date()
@@ -79,9 +79,9 @@ class PastaMaker:
     def __todate(self, date_str):
         date_str = date_str.lstrip(self.annoying_chars)
         #print("Will date format " + date_str)
-        if bool(re.match(r"\d\d?\.00\.\d{4}", date_str)):
+        if bool(re.match(r"\d\d?\.00?\.\d{4}", date_str)):
             return date(1, 1, 1)
-        elif bool(re.match(r"00\.\d\d?\.\d{4}", date_str)):
+        elif bool(re.match(r"00?\.\d\d?\.\d{4}", date_str)):
             return date(1, 1, 1)
         elif bool(re.match(r"\d\d?\.\d\d?\.\d{4}", date_str)):
             return datetime.strptime(date_str, "%d.%m.%Y").date()
@@ -111,10 +111,10 @@ class PastaMaker:
             self.sex = False if biography[sex].upper() == 'H' else True
 
         if name in biography:
-            self.name = biography[first_name]
+            self.name = biography[first_name].strip(' ')
 
         if first_name in biography:
-            self.lastName = biography[name]
+            self.lastName = biography[name].strip(' ')
 
         if birth in biography and biography[birth]:
             self.__startLine()
