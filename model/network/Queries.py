@@ -94,3 +94,14 @@ def postSetPageQuery(csrfToken: str, pageTitle: str, payload: str, createOnly: b
 def postAppendPageQuery(csrfToken: str, pageTitle: str, payload: str, createOnly: bool = True) -> Query:
     """Generates a (POST) request payload to append a payload to a page"""
     return __postEditPageQuery(csrfToken, EditMethodType.APPEND, pageTitle, payload, createOnly)
+
+def fetchPageContent(pageTitle: str) -> Query:
+    """"""
+    return Query({
+        "action": "query",
+        "prop": "revisions",
+        "titles": pageTitle,
+        "rvprop": "content",
+        "rvslots": "*",
+        "format": "json",
+    })
