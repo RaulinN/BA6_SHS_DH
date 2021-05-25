@@ -173,11 +173,11 @@ def main():
     # http://wikipast.epfl.ch/wiki/EliteBot:_test
     # uploadManager.appendContentPage("EliteBot: test", "Hello world!", createOnly = False)
     content = """
-*  [[1971]] / -. [[Naissance]] de [[Regina Elisabeth  Aebi-Müller (84684)]] [source]
-*  [[2000]] / [[Suisse]]. [[Diplôme]]: [[Regina Elisabeth  Aebi-Müller (84684)]] diplomée de [[UniBe]] : Doctorat en droit [source]
-*  [[2005]] / -. [[Regina Elisabeth  Aebi-Müller (84684)]] est professeur ordinaire à [[UniLu]] (faculté de droit) [source]
-*  [[2010]] / -. [[Regina Elisabeth  Aebi-Müller (84684)]] est doyen à [[UniLu]] (Rechtswissenschaftliche Fakultät) [source]
-*  [[2015]] / -. [[Regina Elisabeth  Aebi-Müller (84684)]] est Membre à [[Fonds national suisse de la recherche scientifique]] (conseil national de la recherche ) [source]
+*  [[1971]] / -. [[Naissance]] de [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] [source]
+*  [[2000]] / [[Suisse]]. [[Diplôme]]: [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] diplomée de [[UniBe]] : Doctorat en droit [source]
+*  [[2005]] / -. [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] est professeur ordinaire à [[UniLu]] (faculté de droit) [source]
+*  [[2010]] / -. [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] est doyen à [[UniLu]] (Rechtswissenschaftliche Fakultät) [source]
+*  [[2015]] / -. [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] est Membre à [[Fonds national suisse de la recherche scientifique]] (conseil national de la recherche ) [source]
     """
     uploadManager.setContentPage("Regina Elisabeth Aebi-Müller (84684)", content, createOnly = False)
 
