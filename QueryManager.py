@@ -119,6 +119,10 @@ class QueryManager:
 
         return newEntries
 
+    @staticmethod
+    def __shortenPageLinks(payload: str, pageTitle: str, fullTitle: str) -> str:
+        return payload.replace("[[{}]]".format(fullTitle), "[[{} | {}]]".format(fullTitle, pageTitle))
+
     def uploadInformation(self, pageTitle: str, eliteId: str, payload: str):
         """
         Update a page describing elite <pageTitle> depending on remote information
@@ -141,26 +145,26 @@ class QueryManager:
                 # There's no page with correct simple title (no id)
 
                 # Create a new page with <fullTitle> and set its content to the payload
-                self.setContentPage(fullTitle, payload)
+                self.setContentPage(fullTitle, self.__shortenPageLinks(payload, pageTitle, fullTitle))
             else:
                 # There's a page with correct simple title (no id), probably user created
                 if "??????????????????????" in content:  # TODO modify elite url
-                    # We are virtually sure the page is about the correct elite
+                    # EliteBot is virtually sure the page is about the correct elite
                     newEntries: str = self.__pageContentDiff(payload, content)
 
                     if newEntries != "":
                         # The page is NOT up-to-date
                         self.appendContentPage(pageTitle, newEntries, createOnly = False)
                 else:
-                    # We cannot certify that the page is about the correct elite
-                    self.setContentPage(fullTitle, payload)
+                    # EliteBot cannot certify that the page is about the correct elite
+                    self.setContentPage(fullTitle, self.__shortenPageLinks(payload, pageTitle, fullTitle))
         else:
             # A page with correct title (and id) already exists, very likely created by EliteBot
             newEntries: str = self.__pageContentDiff(payload, content)
 
             if newEntries != "":
                 # The page is NOT up-to-date
-                self.appendContentPage(fullTitle, newEntries, createOnly = False)
+                self.appendContentPage(fullTitle, self.__shortenPageLinks(newEntries, pageTitle, fullTitle), createOnly = False)
 
 
 def main():
@@ -168,8 +172,16 @@ def main():
     # See the result here:
     # http://wikipast.epfl.ch/wiki/EliteBot:_test
     # uploadManager.appendContentPage("EliteBot: test", "Hello world!", createOnly = False)
+    content = """
+*  [[1971]] / -. [[Naissance]] de [[Regina Elisabeth  Aebi-Müller (84684)]] [source]
+*  [[2000]] / [[Suisse]]. [[Diplôme]]: [[Regina Elisabeth  Aebi-Müller (84684)]] diplomée de [[UniBe]] : Doctorat en droit [source]
+*  [[2005]] / -. [[Regina Elisabeth  Aebi-Müller (84684)]] est professeur ordinaire à [[UniLu]] (faculté de droit) [source]
+*  [[2010]] / -. [[Regina Elisabeth  Aebi-Müller (84684)]] est doyen à [[UniLu]] (Rechtswissenschaftliche Fakultät) [source]
+*  [[2015]] / -. [[Regina Elisabeth  Aebi-Müller (84684)]] est Membre à [[Fonds national suisse de la recherche scientifique]] (conseil national de la recherche ) [source]
+    """
+    uploadManager.setContentPage("Regina Elisabeth Aebi-Müller (84684)", content, createOnly = False)
 
-    uploadManager.fetchPageContent("Hugo Allemann")
+    # uploadManager.fetchPageContent("Hugo Allemann")
 
 
 if __name__ == '__main__':
