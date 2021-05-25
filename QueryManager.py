@@ -115,9 +115,9 @@ class QueryManager:
 
         for entry in localPageContent.splitlines():
             if entry not in contentList:
-                newEntries += entry
+                newEntries += ("\n" + entry + "\n")
 
-        return newEntries
+        return ("\n" + newEntries) if newEntries != "" else newEntries
 
     @staticmethod
     def __shortenPageLinks(payload: str, pageTitle: str, fullTitle: str) -> str:
@@ -132,6 +132,7 @@ class QueryManager:
         :param payload: the payload that should be uploaded on the corresponding page
         """
 
+        eliteUrl = "https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite={}".format(eliteId)
         fullTitle = "{} ({})".format(pageTitle, eliteId)
 
         # Ask for the page (if any) with title <fullTitle>
@@ -148,8 +149,9 @@ class QueryManager:
                 self.setContentPage(fullTitle, self.__shortenPageLinks(payload, pageTitle, fullTitle))
             else:
                 # There's a page with correct simple title (no id), probably user created
-                if "??????????????????????" in content:  # TODO modify elite url
+                if eliteUrl in content:
                     # EliteBot is virtually sure the page is about the correct elite
+                    payload = payload.replace("[[{} ({})]]".format(pageTitle, eliteId), "[[{}]]".format(pageTitle))
                     newEntries: str = self.__pageContentDiff(payload, content)
 
                     if newEntries != "":
@@ -160,11 +162,12 @@ class QueryManager:
                     self.setContentPage(fullTitle, self.__shortenPageLinks(payload, pageTitle, fullTitle))
         else:
             # A page with correct title (and id) already exists, very likely created by EliteBot
-            newEntries: str = self.__pageContentDiff(payload, content)
+            newEntries: str = self.__pageContentDiff(self.__shortenPageLinks(payload, pageTitle, fullTitle), content)
 
             if newEntries != "":
                 # The page is NOT up-to-date
-                self.appendContentPage(fullTitle, self.__shortenPageLinks(newEntries, pageTitle, fullTitle), createOnly = False)
+                self.appendContentPage(fullTitle, newEntries, createOnly = False)
+                # self.setContentPage(fullTitle, self.__shortenPageLinks(payload, pageTitle, fullTitle), createOnly = False)
 
 
 def main():
@@ -173,13 +176,13 @@ def main():
     # http://wikipast.epfl.ch/wiki/EliteBot:_test
     # uploadManager.appendContentPage("EliteBot: test", "Hello world!", createOnly = False)
     content = """
-*  [[1971]] / -. [[Naissance]] de [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] [source]
-*  [[2000]] / [[Suisse]]. [[Diplôme]]: [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] diplomée de [[UniBe]] : Doctorat en droit [source]
-*  [[2005]] / -. [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] est professeur ordinaire à [[UniLu]] (faculté de droit) [source]
-*  [[2010]] / -. [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] est doyen à [[UniLu]] (Rechtswissenschaftliche Fakultät) [source]
-*  [[2015]] / -. [[Regina Elisabeth  Aebi-Müller (84684) | Regina Elisabeth  Aebi-Müller]] est Membre à [[Fonds national suisse de la recherche scientifique]] (conseil national de la recherche ) [source]
+*  [[1971]] / -. [[Naissance]] de [[Regina Elisabeth Aebi-Müller (84684) | Regina Elisabeth Aebi-Müller]] [https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite=84684]
+*  [[2000]] / [[Suisse]]. [[Diplôme]]: [[Regina Elisabeth Aebi-Müller (84684) | Regina Elisabeth Aebi-Müller]] diplomée de [[UniBe]] : Doctorat en droit [https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite=84684]
+*  [[2005]] / -. [[Regina Elisabeth Aebi-Müller (84684) | Regina Elisabeth Aebi-Müller]] est professeur ordinaire à [[UniLu]] (faculté de droit) [https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite=84684]
+*  [[2010]] / -. [[Regina Elisabeth Aebi-Müller (84684) | Regina Elisabeth Aebi-Müller]] est doyen à [[UniLu]] (Rechtswissenschaftliche Fakultät) [https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite=84684]
+*  [[2015]] / -. [[Regina Elisabeth Aebi-Müller (84684) | Regina Elisabeth Aebi-Müller]] est Membre à [[Fonds national suisse de la recherche scientifique]] (conseil national de la recherche ) [https://www2.unil.ch/elitessuisses/index.php?page=detailPerso&idIdentite=84684]
     """
-    uploadManager.setContentPage("Regina Elisabeth Aebi-Müller (84684)", content, createOnly = False)
+    # uploadManager.setContentPage("Regina Elisabeth Aebi-Müller (84684)", content, createOnly = False)
 
     # uploadManager.fetchPageContent("Hugo Allemann")
 

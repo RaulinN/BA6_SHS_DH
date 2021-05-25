@@ -23,7 +23,7 @@ class PastaMaker:
         self.page.append(' [' + self.url + ']')
 
     def __startLine(self):
-        self.page.append(' * ')
+        self.page.append('\n* ')
 
     def __endLine(self, date):
         self.__sources()
@@ -78,7 +78,6 @@ class PastaMaker:
 
     def __todate(self, date_str):
         date_str = date_str.lstrip(self.annoying_chars)
-        #print("Will date format " + date_str)
         if bool(re.match(r"\d\d?\.00?\.\d{4}", date_str)):
             return date(1, 1, 1)
         elif bool(re.match(r"00?\.\d\d?\.\d{4}", date_str)):
@@ -136,7 +135,7 @@ class PastaMaker:
                 self.__startLine()
                 self.__spaceTime(formation[year],
                                  formation[country] if country in formation else None)
-                sex_diplome = self.__if_sex("diplomé(e)", "diplomée", "diplomé")
+                sex_diplome = self.__if_sex("diplômé(e)", "diplômée", "diplômé")
                 self.page.append(self.__hyperlink("Diplôme") + ': ' +
                                  self.__hyperlink(self.__formatName()) + ' ' + sex_diplome)
 
@@ -213,5 +212,4 @@ class PastaMaker:
         # TODO call the wikipast magic class
         self.pages.sort(key=lambda x: x[0])
         payload = "".join([x[1] for x in self.pages if x[0] != date(1, 1, 1)])
-        print(payload)
-        return payload
+        return self.__formatName(), payload
