@@ -17,20 +17,22 @@ if __name__ == '__main__':
     #id = 54858
     #id = 61538
     id = 91854
+    id = 50761
     #id = 59556
+    id = 84684
     pasta = p.PastaMaker(str(id))
-    infos = get_infos(get_soup(id))
+    infos = get_infos(get_soup(id), id)
     print(infos)
     pasta.add_ingredient(infos)
     pasta.cook()
     """
-    # soups = open_var('scrap', 'soups_ID_O_100')
-    soups = open_var('scrap', 'soups_ID_A')
+    soups = open_var('scrap', 'soups_ID_O_100')
+    #soups = open_var('scrap', 'soups_ID_A')
     for ID in soups.keys():
         pasta = p.PastaMaker(str(ID)) # Je n'ai mis ici que l'ID pour la visiblité 
-        infos = get_infos(soups[ID])
-        print("------------------------"+str(ID)+"------------------------")
-        print(infos)
+        infos = get_infos(soups[ID], ID)
+        #print("------------------------"+str(ID)+"------------------------")
+        #print(infos)
         pasta.add_ingredient(infos)
         pasta.cook()
         #"""
