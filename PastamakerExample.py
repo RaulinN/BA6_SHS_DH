@@ -3,7 +3,7 @@ from scrap import *
 import pickle
 
 if __name__ == '__main__':
-    """
+    #"""
 
     id = 84917
     id = 94706 # what to do about parethesis
@@ -20,6 +20,7 @@ if __name__ == '__main__':
     id = 50761
     #id = 59556
     id = 84684
+    id = 84972
     pasta = p.PastaMaker(str(id))
     infos = get_infos(get_soup(id), id)
     print(infos)
@@ -35,4 +36,4 @@ if __name__ == '__main__':
         #print(infos)
         pasta.add_ingredient(infos)
         pasta.cook()
-        #"""
+        """

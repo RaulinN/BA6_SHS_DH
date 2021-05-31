@@ -5,7 +5,7 @@ import re
 
 
 class PastaMaker:
-    annoying_chars = ' ≤>≥?-'
+    annoying_chars = ' ≤>≥?-~'
 
     def __init__(self, id: int):
         """Create a page"""
